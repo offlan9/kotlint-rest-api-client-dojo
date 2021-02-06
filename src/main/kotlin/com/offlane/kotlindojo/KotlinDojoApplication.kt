@@ -2,9 +2,11 @@ package com.offlane.kotlindojo
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
 import org.springframework.http.*
+
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.exchange
+
 import org.springframework.web.client.getForObject
 
 @SpringBootApplication
@@ -58,6 +60,6 @@ fun main(args: Array<String>) {
     println(userWithHeader)
 
     val entity: HttpEntity<*> = HttpEntity<Any?>(headers)
-    val response: ResponseEntity<User> = rest.exchange("$url/1", HttpMethod.GET, entity, User::class.java)
+    val response: ResponseEntity<User> = rest.exchange<User>("$url/1", HttpMethod.GET, entity)
     println(response.headers)
 }
