@@ -3,8 +3,7 @@ package com.offlane.kotlindojo
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForObject
 
@@ -43,16 +42,22 @@ data class Company (
 )
 
 fun main(args: Array<String>) {
+    val url = "https://jsonplaceholder.typicode.com/users"
+
     val rest = RestTemplate()
-    val user = rest.getForObject<User>("https://jsonplaceholder.typicode.com/users/1")
+    val user = rest.getForObject<User>("$url/1")
     println(user)
 
-    val users = rest.getForObject<List<User>>("https://jsonplaceholder.typicode.com/users")
+    val users = rest.getForObject<List<User>>(url)
     println(users)
 
     val headers = HttpHeaders()
     headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
     headers["Authorization"] = "Basic xxxxx"
-    val userWithHeader = rest.getForObject<User>("https://jsonplaceholder.typicode.com/users/1", headers)
+    val userWithHeader = rest.getForObject<User>("$url/1", headers)
     println(userWithHeader)
+
+    val entity: HttpEntity<*> = HttpEntity<Any?>(headers)
+    val response: ResponseEntity<User> = rest.exchange("$url/1", HttpMethod.GET, entity, User::class.java)
+    println(response.headers)
 }
